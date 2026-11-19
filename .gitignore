@@ -1,4 +1,8 @@
 # Logs
+id
+id*
+id.pub
+
 logs
 *.log
 npm-debug.log*
