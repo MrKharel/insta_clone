@@ -3,7 +3,8 @@ import { createBrowserRouter, Navigate } from "react-router";
 
 import { RootLayout, ProtectedLayout, AuthLayout } from "./components/layouts";
 
-const Home = lazy(() => import("./routes/home"));
+const Feed = lazy(() => import("./routes/posts.feed"));
+const CreatePost = lazy(() => import("./routes/posts.create"));
 const UserProfile = lazy(() => import("./routes/profile.user"));
 const PublicProfile = lazy(() => import("./routes/profile.others"));
 const SearchProfile = lazy(() => import("./routes/search-profile"));
@@ -21,7 +22,9 @@ const router = createBrowserRouter([
         path: "/app",
         element: <ProtectedLayout />,
         children: [
-          { path: "", element: <Home /> },
+          { path: "", element: <Navigate to="feed" /> },
+          { path: "feed", element: <Feed /> },
+          { path: "create", element: <CreatePost /> },
           { path: "profile", element: <UserProfile /> },
           { path: "profile/:id", element: <PublicProfile /> },
           { path: "search", element: <SearchProfile /> },

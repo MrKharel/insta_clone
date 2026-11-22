@@ -1,9 +1,9 @@
-import { HomeIcon, SearchIcon, User2Icon } from "lucide-react";
+import { HomeIcon, PlusIcon, SearchIcon, User2Icon } from "lucide-react";
 import { NavLink, type NavLinkProps } from "@/components/ui/nav-link";
 
 const NAV_ITEMS: NavLinkProps[] = [
-  { label: "Home", icon: HomeIcon, path: "/app" },
-  { label: "Home", icon: HomeIcon, path: "/ap" },
+  { label: "Home", icon: HomeIcon, path: "/app/feed" },
+  { label: "Create", icon: PlusIcon, path: "/app/create" },
   { label: "Search", icon: SearchIcon, path: "/app/search" },
   { label: "Profile", icon: User2Icon, path: "/app/profile" },
 ];
