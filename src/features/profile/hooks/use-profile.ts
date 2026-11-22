@@ -1,10 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { fetchProfile, fetchUserProfile, updateProfile } from "../_actions/profile";
+import {
+  fetchProfileWithHandle,
+  fetchProfileWithID,
+  fetchUserProfile,
+  updateProfile,
+} from "../_actions/profile";
 
 const PROFILE_KEY = ["profile"] as const;
 
-export const useProfile = () => useQuery({ queryKey: PROFILE_KEY, queryFn: fetchUserProfile });
+export const useProfile = () =>
+  useQuery({ queryKey: PROFILE_KEY, queryFn: fetchUserProfile });
+
+export const useQueryProfile = (id: string) =>
+  useQuery({ queryKey: [id], queryFn: async () => fetchProfileWithID(id) });
 
 export const useQueryProfiles = ({
   handle,
@@ -15,7 +24,7 @@ export const useQueryProfiles = ({
 }) =>
   useQuery({
     queryKey: ["profiles", "search", handle] as const,
-    queryFn: () => fetchProfile(handle),
+    queryFn: () => fetchProfileWithHandle(handle),
     enabled,
   });
 

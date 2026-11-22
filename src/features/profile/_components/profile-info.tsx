@@ -1,58 +1,33 @@
-import { useProfile } from "@/features/profile/hooks";
-
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ProfileStats } from "./profile-stats";
-import { ProfileMetadata } from "./profile-metadata";
 import { ProfileAvatar } from "./profile-avatar";
 
-import type { Dispatch, SetStateAction } from "react";
+const DEFAULT_STATS = [
+  { value: 0, label: "Posts" },
+  { value: 0, label: "Followers" },
+  { value: 0, label: "Following" },
+];
 
 type Props = {
-  setEditMode: Dispatch<SetStateAction<boolean>>;
+  profile: { avatar_url: string | null; handle: string };
+  stats: typeof DEFAULT_STATS;
 };
 
-export const ProfileInfo = ({ setEditMode }: Props) => {
-  const { data: profile, isLoading } = useProfile();
-
-  if (isLoading || !profile) {
-    return (
-      <div className="flex items-center gap-6 border-b-4 border-double pb-8 md:gap-16">
-        <Skeleton className="size-20 shrink-0 rounded-full md:size-36" />
-        <div className="flex flex-1 flex-col gap-3">
-          <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-5 w-64" />
-          <Skeleton className="h-4 w-full max-w-sm" />
-        </div>
-      </div>
-    );
-  }
-
+export const ProfileInfo = ({ profile, stats }: Props) => {
   return (
-    <section className="flex flex-col items-start gap-6 border-b-2 border-double pb-8 md:gap-16">
-      <div className="flex gap-6 items-start">
-        <ProfileAvatar initials={profile.handle.slice(0, 2)} avatar_url={profile.avatar_url} />
+    <div className="flex gap-6">
+      <ProfileAvatar
+        initials={profile.handle.slice(0, 2)}
+        avatar_url={profile.avatar_url}
+        size={1}
+      />
 
-        <div className="flex min-w-0 flex-1 flex-col gap-4">
-          {/* Profile Names: handle and display_name */}
-          <div className="flex flex-col gap-0.5">
-            {profile.display_name && (
-              <p className="font-semibold text-foreground">{profile.display_name}</p>
-            )}
-
-            <h1 className="truncate text-sm font-light text-foreground md:text-2xl">
-              @{profile.handle}
-            </h1>
+      <div className="flex justify-between flex-wrap gap-2 w-full">
+        {stats.map((stat, index) => (
+          <div key={index} className="flex-1 w-full flex flex-col items-center">
+            <p className="font-bold text-lg">{stat.value}</p>
+            <span className="text-sm">{stat.label}</span>
           </div>
-
-          <ProfileStats />
-          <ProfileMetadata />
-        </div>
+        ))}
       </div>
-
-      <Button variant="outline" onClick={() => setEditMode(true)} className="w-full">
-        Edit Profile
-      </Button>
-    </section>
+    </div>
   );
 };

@@ -4,11 +4,12 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { RootLayout, ProtectedLayout, AuthLayout } from "./components/layouts";
 
 const Home = lazy(() => import("./routes/home"));
-const Profile = lazy(() => import("./routes/profile"));
+const UserProfile = lazy(() => import("./routes/profile.user"));
+const PublicProfile = lazy(() => import("./routes/profile.others"));
 const SearchProfile = lazy(() => import("./routes/search-profile"));
 
-const Login = lazy(() => import("./routes/login"));
-const Signup = lazy(() => import("./routes/signup"));
+const Login = lazy(() => import("./routes/auth.login"));
+const Signup = lazy(() => import("./routes/auth.signup"));
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,8 @@ const router = createBrowserRouter([
         element: <ProtectedLayout />,
         children: [
           { path: "", element: <Home /> },
-          { path: "profile", element: <Profile /> },
+          { path: "profile", element: <UserProfile /> },
+          { path: "profile/:id", element: <PublicProfile /> },
           { path: "search", element: <SearchProfile /> },
         ],
       },

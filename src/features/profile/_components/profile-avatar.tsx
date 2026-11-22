@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { cn } from "cn";
 
 import { CameraIcon } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -7,9 +8,10 @@ import { PickNewProfile } from "./pick-new-profile";
 type ProfileAvatarProps = {
   avatar_url: string | null;
   initials: string;
+  size: number;
 };
 
-export const ProfileAvatar = ({ avatar_url, initials }: ProfileAvatarProps) => {
+export const ProfileAvatar = ({ avatar_url, initials, size }: ProfileAvatarProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,7 +22,7 @@ export const ProfileAvatar = ({ avatar_url, initials }: ProfileAvatarProps) => {
         aria-label="Change profile picture"
         className="group relative shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <Avatar className="size-20 md:size-36">
+        <Avatar className={`size-14`}>
           <AvatarImage src={avatar_url ?? undefined} alt={initials} />
           <AvatarFallback className="bg-muted text-2xl text-muted-foreground md:text-5xl">
             {initials}
@@ -31,7 +33,12 @@ export const ProfileAvatar = ({ avatar_url, initials }: ProfileAvatarProps) => {
         </span>
       </button>
 
-      <PickNewProfile open={open} setOpen={setOpen} initials={initials} avatar_url={avatar_url} />
+      <PickNewProfile
+        open={open}
+        setOpen={setOpen}
+        initials={initials}
+        avatar_url={avatar_url ?? undefined}
+      />
     </>
   );
 };

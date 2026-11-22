@@ -10,7 +10,7 @@ const NAV_ITEMS: NavLinkProps[] = [
 
 export const Navbar = () => {
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 grid grid-cols-4 items-center w-full max-w-3xl py-2 border-t">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 grid grid-cols-4 items-center w-full max-w-3xl py-2 border-t bg-background">
       {NAV_ITEMS.map((item, index) => (
         <NavLink key={index} {...item} />
       ))}

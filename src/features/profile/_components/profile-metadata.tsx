@@ -1,26 +1,34 @@
-type ProfileMetadataProps = {
-  bio?: string;
-  website?: string;
-  joined_at?: string;
+type Props = {
+  metadata: {
+    handle: string;
+    display_name: string | null;
+    bio: string | null;
+    website: string | null;
+    created_at: string;
+  };
 };
 
-export const ProfileMetadata = ({ bio, website, joined_at }: ProfileMetadataProps) => {
+export const ProfileMetadata = ({ metadata: profile }: Props) => {
   return (
-    <div className="flex flex-col gap-1 text-sm">
-      {bio && <p className="whitespace-pre-line text-foreground">{bio}</p>}
+    <div className="flex flex-col gap-2">
+      <div className="text-sm">
+        <p className="font-bold text-base">{profile.display_name}</p>
+        <p className="italic text-sm">@{profile.handle}</p>
+        <p className="text-sm">{profile.bio}</p>
 
-      {website && (
-        <a
-          href={website}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="truncate font-medium text-primary hover:underline"
-        >
-          {website}
-        </a>
-      )}
-
-      {joined_at && <p className="text-xs text-muted-foreground">Joined {joined_at}</p>}
+        {profile.website && (
+          <p className="flex gap-2 mt-1">
+            <span className="italic">Website </span>
+            <a className="underline underline-offset-4" href={profile.website}>
+              {profile.website}
+            </a>
+          </p>
+        )}
+        <p className="flex gap-2">
+          <span className="italic">Joined </span>
+          {profile.created_at}
+        </p>
+      </div>
     </div>
   );
 };

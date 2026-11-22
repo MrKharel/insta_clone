@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQueryProfiles } from "../hooks";
+import { Link } from "react-router";
 
 const DEBOUNCE_MS = 300;
 
@@ -31,7 +32,8 @@ export const SearchProfile = () => {
     enabled: debouncedQuery.length > 0,
   });
 
-  const isLoading = hasQuery && (!isSettled || isFetching) && profiles.length === 0;
+  const isLoading =
+    hasQuery && (!isSettled || isFetching) && profiles.length === 0;
 
   return (
     <div className="flex w-full w-fit mx-auto flex-col gap-4">
@@ -55,17 +57,29 @@ export const SearchProfile = () => {
       ) : (
         <ul className="flex flex-col gap-1">
           {profiles.map((profile) => (
-            <li key={profile.id} className="hover:bg-muted flex items-center gap-3 rounded-md p-2">
-              <Avatar>
-                <AvatarImage src={profile.avatar_url ?? ""} alt={profile.handle} />
-                <AvatarFallback>{profile.handle.slice(0, 2).toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <div className="flex min-w-0 flex-col">
-                <span className="truncate text-sm font-medium">
-                  {profile.display_name ?? "User"}
-                </span>
-                <span className="text-muted-foreground truncate text-xs">@{profile.handle}</span>
-              </div>
+            <li key={profile.id}>
+              <Link
+                to={`/app/profile/${profile.id}`}
+                className="hover:bg-muted flex items-center gap-3 rounded-md p-2"
+              >
+                <Avatar>
+                  <AvatarImage
+                    src={profile.avatar_url ?? ""}
+                    alt={profile.handle}
+                  />
+                  <AvatarFallback>
+                    {profile.handle.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex min-w-0 flex-col">
+                  <span className="truncate text-sm font-medium">
+                    {profile.display_name ?? "User"}
+                  </span>
+                  <span className="text-muted-foreground truncate text-xs">
+                    @{profile.handle}
+                  </span>
+                </div>
+              </Link>
             </li>
           ))}
         </ul>

@@ -1,12 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import type { Profile, ProfileUpdate } from "@/features/profile/_actions/profile";
+import type {
+  Profile,
+  ProfileUpdate,
+} from "@/features/profile/_actions/profile";
 import { useProfile, useProfileMutation } from "@/features/profile/hooks";
+import { Field, FieldSet } from "@/components/ui/field";
 
 type ProfileEditProps = {
   onCancel?: () => void;
@@ -17,26 +21,27 @@ type ProfileEditFormProps = ProfileEditProps & {
   profile: Profile;
 };
 
-const EditProfileForm = ({ profile, onCancel, onSaved }: ProfileEditFormProps) => {
+const EditProfileForm = ({
+  profile,
+  onCancel,
+  onSaved,
+}: ProfileEditFormProps) => {
   const { mutate, isPending, error } = useProfileMutation();
 
-  const [handle, setHandle] = useState(profile.handle);
   const [displayName, setDisplayName] = useState(profile.display_name ?? "");
   const [bio, setBio] = useState(profile.bio ?? "");
   const [website, setWebsite] = useState(profile.website ?? "");
 
-  const handleChanged = handle !== profile.handle;
   const displayNameChanged = displayName !== (profile.display_name ?? "");
   const bioChanged = bio !== (profile.bio ?? "");
   const websiteChanged = website !== (profile.website ?? "");
-  const isDirty = handleChanged || displayNameChanged || bioChanged || websiteChanged;
+  const isDirty = displayNameChanged || bioChanged || websiteChanged;
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isDirty) return;
 
     const updates: ProfileUpdate = {};
-    if (handleChanged) updates.handle = handle;
     if (displayNameChanged) updates.display_name = displayName;
     if (bioChanged) updates.bio = bio;
     if (websiteChanged) updates.website = website;
@@ -45,27 +50,17 @@ const EditProfileForm = ({ profile, onCancel, onSaved }: ProfileEditFormProps) =
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex items-start gap-6 border-b-4 border-double pb-8 md:gap-16"
-    >
-      <div className="flex min-w-0 flex-1 flex-col gap-5">
-        <h1 className="text-xl font-light text-foreground md:text-2xl">Edit profile</h1>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="handle">Handle</Label>
-          <Input
-            id="handle"
-            value={handle}
-            onChange={(e) => setHandle(e.target.value)}
-            disabled={isPending}
-            autoComplete="off"
-            contentEditable={false}
-          />
+    <form onSubmit={handleSubmit} className="pb-8 md:gap-16 mt-2">
+      <FieldSet>
+        <div>
+          <p className="italic text-sm">@{profile.handle}</p>
+          <p className="italic text-sm flex gap-2">
+            Joined {profile.created_at}
+          </p>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="display_name">Name</Label>
+        <Field>
+          <Label htmlFor="display_name">Display Name</Label>
           <Input
             id="display_name"
             value={displayName}
@@ -73,9 +68,9 @@ const EditProfileForm = ({ profile, onCancel, onSaved }: ProfileEditFormProps) =
             disabled={isPending}
             autoComplete="off"
           />
-        </div>
+        </Field>
 
-        <div className="flex flex-col gap-2">
+        <Field>
           <Label htmlFor="website">Website</Label>
           <Input
             id="website"
@@ -86,9 +81,9 @@ const EditProfileForm = ({ profile, onCancel, onSaved }: ProfileEditFormProps) =
             placeholder="https://"
             autoComplete="off"
           />
-        </div>
+        </Field>
 
-        <div className="flex flex-col gap-2">
+        <Field>
           <Label htmlFor="bio">Bio</Label>
           <Textarea
             id="bio"
@@ -97,7 +92,7 @@ const EditProfileForm = ({ profile, onCancel, onSaved }: ProfileEditFormProps) =
             disabled={isPending}
             rows={4}
           />
-        </div>
+        </Field>
 
         {error && (
           <p role="alert" className="text-sm text-destructive">
@@ -109,13 +104,19 @@ const EditProfileForm = ({ profile, onCancel, onSaved }: ProfileEditFormProps) =
           <Button type="submit" disabled={!isDirty || isPending}>
             {isPending ? "Saving..." : "Save"}
           </Button>
+
           {onCancel && (
-            <Button type="button" variant="ghost" onClick={onCancel} disabled={isPending}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onCancel}
+              disabled={isPending}
+            >
               Cancel
             </Button>
           )}
         </div>
-      </div>
+      </FieldSet>
     </form>
   );
 };

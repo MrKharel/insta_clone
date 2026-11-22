@@ -25,15 +25,21 @@ export const fetchUserProfile = async (): Promise<Profile> => {
   } = await supabase.auth.getUser();
   if (authError || !user) throw authError ?? new Error("Not authenticated");
 
-  const { data, error } = await supabase.from("user").select("*").eq("id", user.id).single();
+  const { data, error } = await supabase
+    .from("user")
+    .select("*")
+    .eq("id", user.id)
+    .single();
   if (error) throw error;
 
   return data;
 };
 
-export const fetchProfile = async (
+export const fetchProfileWithHandle = async (
   handle: string,
-): Promise<Pick<Profile, "id" | "handle" | "display_name" | "avatar_url">[]> => {
+): Promise<
+  Pick<Profile, "id" | "handle" | "display_name" | "avatar_url">[]
+> => {
   const { data, error } = await supabase
     .from("user")
     .select("id, handle, display_name, avatar_url")
@@ -43,11 +49,27 @@ export const fetchProfile = async (
     console.error(error);
     throw new Error(error.message);
   }
-  console.log({ data, handle });
   return data;
 };
 
-export const updateProfile = async ({ avatar, ...fields }: ProfileUpdate): Promise<Profile> => {
+export const fetchProfileWithID = async (id: string): Promise<Profile> => {
+  const { data, error } = await supabase
+    .from("user")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error(error.message);
+  }
+  return data;
+};
+
+export const updateProfile = async ({
+  avatar,
+  ...fields
+}: ProfileUpdate): Promise<Profile> => {
   const {
     data: { user },
     error: authError,
@@ -65,7 +87,9 @@ export const updateProfile = async ({ avatar, ...fields }: ProfileUpdate): Promi
       .upload(path, avatar, { contentType: avatar.type });
     if (uploadError) throw uploadError;
 
-    updates.avatar_url = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(path).data.publicUrl;
+    updates.avatar_url = supabase.storage
+      .from(AVATAR_BUCKET)
+      .getPublicUrl(path).data.publicUrl;
   }
 
   const { data, error } = await supabase
