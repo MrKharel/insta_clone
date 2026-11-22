@@ -1,10 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { followUser, getFollowers, getFollowings, unfollowUser } from "../_actions/follower";
+import {
+  followUser,
+  getFollowers,
+  getFollowings,
+  unfollowUser,
+} from "../_actions/follower";
 
 export const followerKeys = {
   all: ["follower"] as const,
-  followers: (userId?: string) => [...followerKeys.all, "followers", userId ?? "me"] as const,
-  followings: (userId?: string) => [...followerKeys.all, "followings", userId ?? "me"] as const,
+  followers: (userId?: string) =>
+    [...followerKeys.all, "followers", userId ?? "me"] as const,
+  followings: (userId?: string) =>
+    [...followerKeys.all, "followings", userId ?? "me"] as const,
 };
 
 export const useFollowers = (userId?: string) => {

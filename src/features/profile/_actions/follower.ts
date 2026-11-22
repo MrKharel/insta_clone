@@ -12,7 +12,9 @@ const FollowerQuery = z.object({
 
 type Follower = z.infer<typeof FollowerQuery>;
 
-export const getFollowers = async (userId?: string): Promise<Array<Follower>> => {
+export const getFollowers = async (
+  userId?: string,
+): Promise<Array<Follower>> => {
   if (userId) {
     const { data, error } = await supabase
       .from(FOLLOWER_TABLE)

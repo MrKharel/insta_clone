@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useProfile } from "./hooks";
+import { useFollowers, useFollowings, useProfile } from "./hooks";
 
 import { Button } from "@/components/ui/button";
 import { ProfileMetadata } from "./_components/profile-metadata";
@@ -8,8 +8,11 @@ import { EditProfile } from "./_components/edit-profile";
 import { ProfileLoading } from "./_components/profile-loading";
 
 export const UserProfile = () => {
-  const [editMode, setEditMode] = useState(false);
   const { isLoading, data: profile } = useProfile();
+  const { data: followers } = useFollowers();
+  const { data: followings } = useFollowings();
+
+  const [editMode, setEditMode] = useState(false);
 
   if (isLoading || !profile) {
     return <ProfileLoading />;
@@ -21,8 +24,8 @@ export const UserProfile = () => {
         profile={{ ...profile }}
         stats={[
           { value: 0, label: "Posts" },
-          { value: 0, label: "Followers" },
-          { value: 0, label: "Following" },
+          { value: followers ? followers.length : 0, label: "Followers" },
+          { value: followings ? followings.length : 0, label: "Following" },
         ]}
       />
 
