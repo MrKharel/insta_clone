@@ -1,3 +1,2 @@
-export * from "./login";
-export * from "./signup";
-export { signout } from "./_actions";
+export { authRoutes } from "./router";
+export { useLogout, useSession } from "./hooks";

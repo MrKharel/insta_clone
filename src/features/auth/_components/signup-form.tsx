@@ -1,96 +1,91 @@
-import { useState, type SubmitEvent } from "react";
-import { signup } from "../_actions";
+import { useState } from "react";
 
 import { Link } from "react-router";
-import { Loader2Icon } from "lucide-react";
-import { Field, FieldDescription, FieldTitle, FieldSet, FieldError } from "@/components/ui/field";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Loader2Icon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { toast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldSet,
+  FieldTitle,
+  FieldDescription,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+
+import type { SubmitEvent } from "react";
+import { signup } from "../_actions/signup";
 
 export const SignupForm = () => {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<null | string>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+  async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      await signup(email, password, username);
-      toast.add({
-        title: `Check your email: ${email}`,
-      });
-    } catch (error: any) {
-      setError(typeof error.message === "string" ? error.message : null);
+      await signup(email, password);
+      toast.add({ title: "Successful. Check your email to proceed." });
+    } catch (err: any) {
+      toast.add({ title: err.message });
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit}>
       <FieldSet>
-        <Field>
-          <FieldTitle>Signup</FieldTitle>
-          <FieldDescription>
-            Alreay have an accoutn?{" "}
-            <Link to="/auth/login" className="text-foreground">
-              Login
-            </Link>
-          </FieldDescription>
-        </Field>
+        <FieldTitle>Signup to Outstagram</FieldTitle>
+        <FieldDescription>
+          Already have an account? <Link to="/auth/login">Login</Link>
+        </FieldDescription>
 
-        <Field>
-          <Label htmlFor="username">Username</Label>
-          <FieldDescription>Choose an unique username</FieldDescription>
-          <Input
-            type="username"
-            id="type"
-            placeholder="Jhon Doe"
-            required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Field>
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@email.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Field>
 
-        <Field>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            type="email"
-            id="email"
-            placeholder="you@gmail.com"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Field>
+          <Field className="relative">
+            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="password"
+              placeholder={showPassword ? "strongpassword" : "••••••••"}
+              required
+              className="pr-8"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <div
+              className="!size-4 *:size-4 absolute top-1/2 translate-y-1/2 right-2"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <EyeIcon /> : <EyeOffIcon />}
+            </div>
+          </Field>
 
-        <Field>
-          <Label htmlFor="password">Password</Label>
-          <Input
-            type="password"
-            id="password"
-            placeholder="●●●●●●"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <FieldDescription>Must be more than 8 char long</FieldDescription>
-        </Field>
-
-        <Button type="submit" disabled={isLoading} className="relative">
-          Signup
-          {isLoading && (
-            <Loader2Icon className="size-4 animate-spin absolute top-1/2 -translate-y-1/2 right-2" />
-          )}
-        </Button>
-
-        {error && <FieldError>{error}</FieldError>}
+          <Button type="submit" disabled={isLoading} className="relative">
+            Signup
+            {isLoading && (
+              <Loader2Icon className="absolute top-1/2 -translate-y-1/2 right-2 animate-spin size-4" />
+            )}
+          </Button>
+        </FieldGroup>
       </FieldSet>
     </form>
   );
